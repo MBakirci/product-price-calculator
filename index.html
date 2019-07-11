@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Price calculator</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <style>
+      h1 {
+        padding-top: 2.5em;
+        color: #41b883;
+      }
+
+      .alert.alert-info {
+        background-color: #41b883;
+        color: white;
+        font-size: 1.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1>
+          Price calculator
+        </h1>
+
+        <div class="row">
+          <div class="col-xs-12">
+            <price
+              label="Price"
+              :value="price"
+              @update="price=arguments[0]"
+            ></price>
+            <price
+              label="Family Discount %"
+              :value="familyDiscount"
+              @update="familyDiscount=arguments[0]"
+            ></price>
+            <price
+              label="Close Friend Discount %"
+              :value="closeFriendDiscount"
+              @update="closeFriendDiscount=arguments[0]"
+            ></price>
+            <price
+              label="Friend Discount %"
+              :value="friendDiscount"
+              @update="friendDiscount=arguments[0]"
+            ></price>
+            <price
+              label="Others Discount %"
+              :value="othersDiscount"
+              @update="othersDiscount=arguments[0]"
+            ></price>
+
+            <div class="row">
+              <div class="alert alert-info">
+                Family: <strong>{{ FamilyTotal }}</strong>
+              </div>
+              <div class="alert alert-info">
+                Close Friend: <strong>{{ CloseFriendTotal }}</strong>
+              </div>
+              <div class="alert alert-info">
+                Friend: <strong>{{ FriendTotal }}</strong>
+              </div>
+              <div class="alert alert-info">
+                Others: <strong>{{ OthersTotal }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <template id="price-template">
+      <div class="form-group">
+        <label>{{ label }}</label>
+        <input
+          type="text"
+          class="form-control"
+          v-model.number="value"
+          @change="update"
+          placeholder="0"
+        />
+      </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script>
+      Vue.component("price", {
+        template: "#price-template",
+        props: ["label", "value"],
+        methods: {
+          update: function() {
+            this.$emit("update", this.value);
+          }
+        }
+      });
+
+      new Vue({
+        el: "#app",
+        data: {
+          price: "",
+          familyDiscount: "",
+          closeFriendDiscount: "",
+          friendDiscount: "",
+          othersDiscount: ""
+        },
+
+        computed: {
+          FamilyTotal: function() {
+            const discount = (100 - this.familyDiscount) / 100;
+            return this.price * discount;
+          },
+          CloseFriendTotal: function() {
+            const discount = (100 - this.closeFriendDiscount) / 100;
+            return this.price * discount;
+          },
+          FriendTotal: function() {
+            const discount = (100 - this.friendDiscount) / 100;
+            return this.price * discount;
+          },
+          OthersTotal: function() {
+            const discount = (100 - this.othersDiscount) / 100;
+            return this.price * discount;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
